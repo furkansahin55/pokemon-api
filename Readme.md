@@ -145,6 +145,7 @@ Custom error classes can have http status code and message properties so at glob
 As I realized id parameter for pokemons is a base64 encoded version with format Pokemon:001 
 Because of how the resolver implemented more than one id can return the same pokemon.
 That's why I used name property as key which is also unique.
+It was also possible to still use id and handle this unexpected behaviour.
 
 Example: \
 **UG9rZW1vbjowMDE=** gives Bulbasaur \
