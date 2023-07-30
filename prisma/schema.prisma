@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl"]
+}
+
+model PokemonDimension {
+  id            String   @id @default(cuid())
+  minimum       String
+  maximum       String
+  pokemonWeight Pokemon? @relation("WeightPokemonDimension")
+  pokemonHeight Pokemon? @relation("HeightPokemonDimension")
+}
+
+model Pokemon {
+  id                    String
+  number                String
+  name                  String                 @id
+  weight                PokemonDimension       @relation("WeightPokemonDimension", fields: [weightId], references: [id])
+  height                PokemonDimension       @relation("HeightPokemonDimension", fields: [heightId], references: [id])
+  weightId              String                 @unique
+  heightId              String                 @unique
+  classification        String
+  types                 String[]
+  resistant             String[]
+  attacks               PokemonAttack?
+  weaknesses            String[]
+  fleeRate              Float
+  maxCP                 Int
+  evolutions            Evolution[]            @relation("Evolution")
+  evolutionRequirements EvolutionRequirements?
+  maxHP                 Int
+  image                 String
+}
+
+model Evolution {
+  id               String  @id @default(cuid())
+  name             String
+  preEvolution     Pokemon @relation("Evolution", fields: [preEvolutionName], references: [name])
+  preEvolutionName String
+}
+
+model PokemonAttack {
+  id          String   @id @default(cuid())
+  pokemon     Pokemon  @relation(fields: [pokemonName], references: [name])
+  pokemonName String   @unique
+  fast        Attack[] @relation("FastAttack")
+  special     Attack[] @relation("SpecialAttack")
+}
+
+model Attack {
+  id                     String         @id @default(cuid())
+  name                   String
+  type                   String
+  damage                 Int
+  pokemonFastAttack      PokemonAttack? @relation("FastAttack", fields: [pokemonFastAttackId], references: [id])
+  pokemonSpecialAttack   PokemonAttack? @relation("SpecialAttack", fields: [pokemonSpecialAttackId], references: [id])
+  pokemonFastAttackId    String?
+  pokemonSpecialAttackId String?
+}
+
+model EvolutionRequirements {
+  id          String  @id @default(cuid())
+  amount      Int
+  name        String
+  pokemon     Pokemon @relation(fields: [pokemonName], references: [name])
+  pokemonName String  @unique
+}

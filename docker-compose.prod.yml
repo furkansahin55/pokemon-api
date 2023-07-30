@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  web:
+    build:
+      target: production
+    command: npm run docker:command:prod
+    ports:
+      - "${BIND_PORT}:${BIND_PORT}"
+
+
