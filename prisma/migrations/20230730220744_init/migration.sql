@@ -1,19 +1,8 @@
 -- CreateTable
-CREATE TABLE "PokemonDimension" (
-    "id" TEXT NOT NULL,
-    "minimum" TEXT NOT NULL,
-    "maximum" TEXT NOT NULL,
-
-    CONSTRAINT "PokemonDimension_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "Pokemon" (
     "id" TEXT NOT NULL,
     "number" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "weightId" TEXT NOT NULL,
-    "heightId" TEXT NOT NULL,
     "classification" TEXT NOT NULL,
     "types" TEXT[],
     "resistant" TEXT[],
@@ -24,6 +13,17 @@ CREATE TABLE "Pokemon" (
     "image" TEXT NOT NULL,
 
     CONSTRAINT "Pokemon_pkey" PRIMARY KEY ("name")
+);
+
+-- CreateTable
+CREATE TABLE "PokemonDimension" (
+    "id" TEXT NOT NULL,
+    "minimum" TEXT NOT NULL,
+    "maximum" TEXT NOT NULL,
+    "weightPokemonName" TEXT,
+    "heightPokemonName" TEXT,
+
+    CONSTRAINT "PokemonDimension_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -66,10 +66,10 @@ CREATE TABLE "EvolutionRequirements" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Pokemon_weightId_key" ON "Pokemon"("weightId");
+CREATE UNIQUE INDEX "PokemonDimension_weightPokemonName_key" ON "PokemonDimension"("weightPokemonName");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Pokemon_heightId_key" ON "Pokemon"("heightId");
+CREATE UNIQUE INDEX "PokemonDimension_heightPokemonName_key" ON "PokemonDimension"("heightPokemonName");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "PokemonAttack_pokemonName_key" ON "PokemonAttack"("pokemonName");
@@ -78,10 +78,10 @@ CREATE UNIQUE INDEX "PokemonAttack_pokemonName_key" ON "PokemonAttack"("pokemonN
 CREATE UNIQUE INDEX "EvolutionRequirements_pokemonName_key" ON "EvolutionRequirements"("pokemonName");
 
 -- AddForeignKey
-ALTER TABLE "Pokemon" ADD CONSTRAINT "Pokemon_weightId_fkey" FOREIGN KEY ("weightId") REFERENCES "PokemonDimension"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "PokemonDimension" ADD CONSTRAINT "PokemonDimension_weightPokemonName_fkey" FOREIGN KEY ("weightPokemonName") REFERENCES "Pokemon"("name") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Pokemon" ADD CONSTRAINT "Pokemon_heightId_fkey" FOREIGN KEY ("heightId") REFERENCES "PokemonDimension"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "PokemonDimension" ADD CONSTRAINT "PokemonDimension_heightPokemonName_fkey" FOREIGN KEY ("heightPokemonName") REFERENCES "Pokemon"("name") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Evolution" ADD CONSTRAINT "Evolution_preEvolutionName_fkey" FOREIGN KEY ("preEvolutionName") REFERENCES "Pokemon"("name") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -125,12 +125,16 @@ async function getPokemon(name: string) {
   await app.prisma.pokemon.create({
     data: {
       ...result.pokemon,
-      weight: {
-        create: result.pokemon.weight,
-      },
-      height: {
-        create: result.pokemon.height,
-      },
+      weight: result.pokemon.weight
+        ? {
+            create: result.pokemon.weight,
+          }
+        : undefined,
+      height: result.pokemon.height
+        ? {
+            create: result.pokemon.height,
+          }
+        : undefined,
       attacks: {
         create: {
           fast: result.pokemon.attacks.fast

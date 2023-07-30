@@ -11,22 +11,12 @@ generator client {
   binaryTargets = ["native", "linux-musl"]
 }
 
-model PokemonDimension {
-  id            String   @id @default(cuid())
-  minimum       String
-  maximum       String
-  pokemonWeight Pokemon? @relation("WeightPokemonDimension")
-  pokemonHeight Pokemon? @relation("HeightPokemonDimension")
-}
-
 model Pokemon {
   id                    String
   number                String
   name                  String                 @id
-  weight                PokemonDimension       @relation("WeightPokemonDimension", fields: [weightId], references: [id])
-  height                PokemonDimension       @relation("HeightPokemonDimension", fields: [heightId], references: [id])
-  weightId              String                 @unique
-  heightId              String                 @unique
+  weight                PokemonDimension?       @relation("WeightPokemonDimension", map: "weightPokemonName")
+  height                PokemonDimension?       @relation("HeightPokemonDimension", map: "heightPokemonName")
   classification        String
   types                 String[]
   resistant             String[]
@@ -40,6 +30,15 @@ model Pokemon {
   image                 String
 }
 
+model PokemonDimension {
+  id            String   @id @default(cuid())
+  minimum       String
+  maximum       String
+  pokemonWeight Pokemon? @relation("WeightPokemonDimension", fields: [weightPokemonName], references: [name])
+  pokemonHeight Pokemon? @relation("HeightPokemonDimension", fields: [heightPokemonName], references: [name])
+  weightPokemonName      String? @unique
+  heightPokemonName      String? @unique
+}
 model Evolution {
   id               String  @id @default(cuid())
   name             String
